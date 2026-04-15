@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>राजमुद्रा अकॅडमी - मास्टर टेस्ट २०२६</title>
+    <style>
+        :root { --primary: #fb8c00; --secondary: #1e88e5; --success: #2e7d32; --danger: #c62828; --dark: #263238; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; user-select: none; }
+        
+        /* लोगो आणि लॉगिन */
+        .logo-container { text-align: center; margin-bottom: 10px; }
+        .logo-img { width: 130px; height: 130px; border-radius: 50%; border: 4px solid var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.2); background: white; }
+        
+        #login-box { width: 90%; max-width: 420px; margin: 30px auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; border-top: 10px solid var(--primary); }
+        .input-field { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #eee; border-radius: 8px; font-size: 16px; text-align: center; outline: none; }
+        .login-btn { background: var(--primary); color: white; border: none; width: 100%; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 18px; margin-top: 10px; }
+
+        /* टेस्ट स्क्रीन */
+        #test-screen { display: none; }
+        .header { background: var(--dark); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .user-badge { font-size: 0.85rem; border-left: 3px solid var(--primary); padding-left: 10px; }
+        
+        .container { display: flex; flex-wrap: wrap; max-width: 1300px; margin: 20px auto; gap: 20px; padding: 0 15px; }
+        .question-area { flex: 3; min-width: 320px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); min-height: 520px; position: relative; }
+        .sidebar { flex: 1; min-width: 280px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); height: fit-content; position: sticky; top: 110px; }
+
+        /* सेक्शन आणि प्रश्न */
+        .sec-tag { background: #fff3e0; color: #e65100; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; margin-bottom: 10px; display: inline-block; border: 1px solid #ffe0b2; }
+        .q-text { font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 20px; line-height: 1.5; }
+        .option-label { display: block; padding: 14px; border: 2px solid #f0f0f0; margin-bottom: 10px; border-radius: 10px; cursor: pointer; transition: 0.2s; }
+        .option-label:hover { background: #f9f9f9; border-color: var(--secondary); }
+        .option-label.selected { border-color: var(--secondary); background: #e3f2fd; }
+
+        /* ब्रँडिंग फुटर */
+        .q-branding { margin-top: 20px; font-size: 0.85rem; color: #fb8c00; font-weight: bold; border-top: 1px dashed #ddd; padding-top: 10px; display: flex; justify-content: space-between; }
+
+        /* बटन्स आणि पॅलेट */
+        .nav-btns { display: flex; justify-content: space-between; margin-top: 20px; flex-wrap: wrap; gap: 8px; }
+        .btn { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .palette { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 15px; }
+        .n-box { width: 38px; height: 38px; border: 1px solid #ddd; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+        .n-box.active { border: 2px solid var(--secondary); background: #e3f2fd; }
+        .n-box.answered { background: var(--success); color: white; border: none; }
+        .n-box.marked { background: #8e44ad; color: white; border: none; }
+
+        /* निकाल स्क्रीन */
+        #result-screen { display: none; max-width: 800px; margin: 40px auto; background: white; padding: 35px; border-radius: 20px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .analysis-card { background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 15px; text-align: left; border-left: 5px solid #ddd; font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+
+<div id="login-box">
+    <div class="logo-container">
+        <img src="https://i.postimg.cc/mD8GfXp5/rajmudra-logo.jpg" class="logo-img" alt="Rajmudra Academy Logo" onerror="this.src='https://via.placeholder.com/130?text=Rajmudra+Academy'">
+    </div>
+    <h2 style="color:var(--primary); margin:0;">राजमुद्रा करिअर अकॅडमी</h2>
+    <p><b>येवला | प्रा. शुभम निघुट सर</b></p>
+    <hr>
+    <div id="step-1">
+        <input type="number" id="u_mobile" class="input-field" placeholder="ओरिजनल मोबाईल नंबर">
+        <button class="login-btn" onclick="nextStep()">पुढे जा</button>
+    </div>
+    <div id="step-2" style="display:none;">
+        <input type="text" id="u_name" class="input-field" placeholder="तुमचे पूर्ण नाव (खरे नाव)">
+        <button class="login-btn" style="background:var(--success);" onclick="startExam()">पेपर सुरू करा</button>
+    </div>
+</div>
+
+<div id="test-screen">
+    <div class="header">
+        <div class="user-badge">👤 <b><span id="top-name"></span></b><br>📱 <span id="top-mobile"></span></div>
+        <div style="background: #c62828; padding: 6px 15px; border-radius: 5px; font-weight: bold;">⏳ <span id="clock">60:00</span></div>
+        <button class="btn" style="background:white; color:black; font-size: 0.8rem;" onclick="toggleLang()">🌐 HINDI / MARATHI</button>
+    </div>
+
+    <div class="container">
+        <div class="question-area">
+            <div id="sec-tag" class="sec-tag">SECTION - A</div>
+            <div id="q-box">
+                <p class="q-text" id="q-main"></p>
+                <div id="options-container"></div>
+            </div>
+            
+            <div class="q-branding">
+                <span>By: Shubham Nighut Sir</span>
+                <span>📞 7709156031</span>
+            </div>
+
+            <div class="nav-btns">
+                <button class="btn" style="background:#cfd8dc;" onclick="changeQ(-1)">मागे</button>
+                <button class="btn" style="background:#eee; border:1px solid #ccc;" onclick="clearAns()">Clear Response</button>
+                <button class="btn" style="background:#8e44ad; color:white;" onclick="markReview()">Review</button>
+                <button class="btn" style="background:var(--secondary); color:white;" onclick="changeQ(1)">Save & Next</button>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <h4 style="margin:0;">प्रश्नांची स्थिती</h4>
+            <div class="palette" id="palette-grid"></div>
+            <hr style="margin:20px 0;">
+            <button class="btn" style="background:var(--danger); color:white; width:100%;" onclick="confirmSubmit()">FINAL SUBMIT</button>
+            <p style="text-align: center; font-size: 0.7rem; color: #666; margin-top: 10px;">🚩 राजमुद्रा अकॅडमी, येवला 🚩</p>
+        </div>
+    </div>
+</div>
+
+<div id="result-screen">
+    <h2 style="color:var(--success);">✅ पेपर यशस्वीरीत्या सबमिट झाला!</h2>
+    <div style="font-size: 1.2rem; margin: 20px 0;">
+        विद्यार्थी: <b id="res-name"></b><br>
+        तुमचे गुण: <b id="res-score" style="color:var(--primary); font-size: 2.5rem;">0 / 50</b>
+    </div>
+    <button class="btn" style="background:#25D366; color:white; width:100%; padding:15px; margin-bottom:12px; font-size: 1.1rem;" onclick="sendWA()">📲 सरांना निकाल पाठवा (WhatsApp)</button>
+    <button class="btn" style="background:var(--secondary); color:white; width:100%;" onclick="toggleAnalysis()">📑 सविस्तर विश्लेषण पहा (Analysis)</button>
+    
+    <div id="analysis-box" style="display:none; text-align:left; margin-top:30px; border-top: 2px solid #eee; padding-top:20px;">
+        <h3>प्रश्नोत्तर विश्लेषण</h3>
+        <div id="analysis-list"></div>
+    </div>
+</div>
+
+<script>
+    let currentIdx = 0, currentLang = 'hi', timeLeft = 60 * 60, timer;
+    let uName = "", uMobile = "", userAns = new Array(50).fill(null), isReviewed = new Array(50).fill(false);
+
+    // ५० प्रश्नांचा संपूर्ण डेटा (विश्लेषणासह)
+    const quizData = [
+        { sec: "A (GK)", mr: {q: "१. २०११ च्या जनगणनेनुसार भारताचा साक्षरता दर किती आहे?", a: ["70.04%", "72.04%", "74.04%", "76.04%"], ex: "२०११ च्या जनगणनेनुसार भारताचा साक्षरता दर ७४.०४% होता."}, hi: {q: "1. 2011 की जनगणना के अनुसार भारत की साक्षरता दर क्या है?", a: ["70.04%", "72.04%", "74.04%", "76.04%"], ex: "2011 की जनगणना के अनुसार भारत की साक्षरता दर 74.04% थी।"}, c: 2 },
+        { sec: "A (GK)", mr: {q: "२. भारतीय वायुसेनेचे मुख्यालय कोठे आहे?", a: ["मुंबई", "दिल्ली", "चेन्नई", "कोलकाता"], ex: "भारतीय वायुसेनेचे मुख्य मुख्यालय नवी दिल्ली येथे आहे."}, hi: {q: "2. भारतीय वायुसेना का मुख्यालय कहाँ स्थित है?", a: ["मुंबई", "दिल्ली", "चेन्नई", "कोलकाता"], ex: "भारतीय वायुसेना का मुख्यालय नई दिल्ली में स्थित है।"}, c: 1 },
+        { sec: "A (GK)", mr: {q: "३. सध्या लोकसभेचे अध्यक्ष कोण आहेत?", a: ["राजनाथ सिंह", "अमित शाह", "ओम बिर्ला", "नरेंद्र मोदी"], ex: "ओम बिर्ला हे १८ व्या लोकसभेचे अध्यक्ष आहेत."}, hi: {q: "3. वर्तमान में लोकसभा के अध्यक्ष कौन हैं?", a: ["राजनाथ सिंह", "अमित शाह", "ओम बिरला", "नरेंद्र मोदी"], ex: "ओम बिरला वर्तमान में लोकसभा अध्यक्ष हैं।"}, c: 2 },
+        { sec: "A (GK)", mr: {q: "४. २ ऑक्टोबर खालीलपैकी कोणत्या रूपात साजरा केला जातो?", a: ["संविधान दिवस", "गांधी जयंती", "बालदिन", "शिक्षक दिन"], ex: "२ ऑक्टोबर हा महात्मा गांधींचा जन्मदिन 'गांधी जयंती' म्हणून साजरा होतो."}, hi: {q: "4. 2 अक्टूबर को निम्न में से किस रूप में मनाया जाता है?", a: ["संविधान दिवस", "गांधी जयंती", "बाल दिवस", "शिक्षक दिवस"], ex: "2 अक्टूबर महात्मा गांधी जयंती के रूप में मनाया जाता है।"}, c: 1 },
+        { sec: "A (GK)", mr: {q: "५. गेवरा कोळसा खाण कोणत्या राज्यात आहे?", a: ["महाराष्ट्र", "झारखंड", "छत्तीसगड", "बिहार"], ex: "गेवरा ही आशियातील सर्वात मोठी कोळसा खाण छत्तीसगडमध्ये आहे."}, hi: {q: "5. गेवर कोयला खदान किस राज्य में स्थित है?", a: ["महाराष्ट्र", "झारखंड", "छत्तीसगढ़", "बिहार"], ex: "गेवरा कोयला खदान छत्तीसगढ़ में स्थित है।"}, c: 2 },
+        { sec: "A (GK)", mr: {q: "६. पीएम किसान योजनेअंतर्गत शेतकऱ्यांना प्रतिवर्षी किती रक्कम दिली जाते?", a: ["₹४०००", "₹५०००", "₹६०००", "₹७०००"], ex: "या योजनेत वर्षाला ३ हप्त्यांमध्ये एकूण ६००० रुपये दिले जातात."}, hi: {q: "6. प्रधानमंत्री किसान योजना के अंतर्गत किसानों को प्रति वर्ष कितनी राशि प्रदान की जाती है?", a: ["₹4000", "₹5000", "₹6000", "₹7000"], ex: "किसानों को प्रति वर्ष 6000 रुपये दिए जाते हैं।"}, c: 2 },
+        { sec: "A (GK)", mr: {q: "७. 'G.I.I.' चे पूर्ण रूप काय आहे?", a: ["Global Information Index", "Global Innovation Index", "General Innovation Index", "Global Industrial Index"], ex: "याचे पूर्ण रूप Global Innovation Index असे आहे."}, hi: {q: "7. 'G.I.I.' का पूर्ण रूप क्या है?", a: ["Global Information Index", "Global Innovation Index", "General Innovation Index", "Global Industrial Index"], ex: "G.I.I. का अर्थ Global Innovation Index है।"}, c: 1 },
+        { sec: "A (GK)", mr: {q: "८. पन्नाची खाण कशासाठी प्रसिद्ध आहे?", a: ["सोने", "चांदी", "हिरा", "लोखंड"], ex: "मध्य प्रदेशातील पन्ना ही खाण हिऱ्यांसाठी (Diamonds) प्रसिद्ध आहे."}, hi: {q: "8. पन्ना की खान किसके लिए प्रसिद्ध है?", a: ["सोना", "चांदी", "हीरा", "लोहा"], ex: "पन्ना की खान हीरे के लिए प्रसिद्ध है।"}, c: 2 },
+        { sec: "A (GK)", mr: {q: "९. खालीलपैकी कोणते ठिकाण बौद्ध धर्माशी संबंधित आहे?", a: ["अमरावती", "कुशीनगर", "सारनाथ", "बोधगया"], ex: "हे सर्व पर्याय बौद्ध धर्माशी संबंधित आहेत, पण कुशीनगर/बोधगया मुख्य आहेत."}, hi: {q: "9. निम्न में से कौन-सा स्थान बौद्ध धर्म से संबंधित है?", a: ["अमरावती", "कुशीनगर", "सारनाथ", "बोधगया"], ex: "बोधगया में बुद्ध को ज्ञान प्राप्त हुआ था।"}, c: 3 },
+        { sec: "A (GK)", mr: {q: "१०. मेघालयातील खासी जमातीद्वारे कोणता सण साजरा केला जातो?", a: ["बिहू", "वांगला", "ओणम", "छठ"], ex: "वांगला हा मेघालयातील खासी आणि गारो जमातींचा मुख्य सण आहे."}, hi: {q: "10. मेघालय की खासी जनजाति द्वारा कौन-सा त्योहार मनाया जाता है?", a: ["बिहू", "वांगला", "ओणम", "छठ"], ex: "वांगला मेघालय का प्रमुख त्योहार है।"}, c: 1 },
+        { sec: "A (GK)", mr: {q: "११. भारतीय संसदेत किती सभागृहे असतात?", a: ["१", "२", "३", "४"], ex: "लोकसभा आणि राज्यसभा अशी दोन सभागृहे असतात."}, hi: {q: "11. भारतीय संसद में कितने सदन होते हैं?", a: ["1", "2", "3", "4"], ex: "भारतीय संसद में 2 सदन होते हैं।"}, c: 1 },
+        { sec: "A (GK)", mr: {q: "१२. २६ जानेवारी १९५० हा दिवस कोणत्या नावाने साजरा केला जातो?", a: ["स्वातंत्र्य दिन", "प्रजासत्ताक दिन", "संविधान दिन", "शिक्षक दिन"], ex: "या दिवशी भारतीय संविधान लागू झाले, म्हणून 'प्रजासत्ताक दिन' साजरा होतो."}, hi: {q: "12. 26 जनवरी 1950 को किस दिन के रूप में मनाया जाता है?", a: ["स्वतंत्रता दिवस", "गणतंत्र दिवस", "संविधान दिवस", "शिक्षक दिवस"], ex: "26 जनवरी गणतंत्र दिवस के रूप में मनाया जाता है।"}, c: 1 },
+        { sec: "A (GK)", mr: {q: "१३. शीतल देवीला कोणत्या खेळात अर्जुन पुरस्कार मिळाला आहे?", a: ["हॉकी", "पॅरा नेमबाजी", "कुस्ती", "क्रिकेट"], ex: "शीतल देवी ही प्रसिद्ध पॅरा नेमबाज (Para Archery) आहे."}, hi: {q: "13. शीतल देवी को किस खेल में अर्जुन पुरस्कार प्राप्त हुआ है?", a: ["हॉकी", "पैरा तीरंदाजी", "कुश्ती", "क्रिकेट"], ex: "शीतल देवी पैरा तीरंदाजी से संबंधित हैं।"}, c: 1 },
+        { sec: "A (GK)", mr: {q: "१४. 'वेटिंग फॉर अ व्हिसा' या पुस्तकाचे लेखक कोण आहेत?", a: ["गांधीजी", "डॉ. बी.आर. आंबेडकर", "नेहरू", "सुभाष चंद्र बोस"], ex: "हे डॉ. बाबासाहेब आंबेडकरांचे आत्मचरित्रात्मक पुस्तक आहे."}, hi: {q: "14. 'वेटिंग फॉर ए वीजा' पुस्तक के लेखक कौन हैं?", a: ["महात्मा गांधी", "डॉ. बी. आर. अंबेडकर", "जवाहरलाल नेहरू", "सुभाष चंद्र बोस"], ex: "यह डॉ. बी. आर. अंबेडकर द्वारा लिखित है।"}, c: 1 },
+        { sec: "A (GK)", mr: {q: "१५. लंडन शहर कोणत्या नदीकाठी वसलेले आहे?", a: ["सीन", "थेम्स", "नाईल", "डेन्यूब"], ex: "लंडन हे इंग्लंडचे शहर थेम्स नदीकाठी वसलेले आहे."}, hi: {q: "15. लंदन किस नदी के किनारे स्थित है?", a: ["सीन", "थेम्स", "नील", "डेन्यूब"], ex: "लंदन थेम्स नदी के किनारे स्थित है।"}, c: 1 },
+        
+        // SECTION B - SCIENCE (16-30)
+        { sec: "B (Sci)", mr: {q: "१६. उष्णता काय आहे?", a: ["ऊर्जेचे एक रूप", "पदार्थाचा प्रकार", "तापमान मोजणे", "ध्वनीचा प्रकार"], ex: "उष्णता ही ऊर्जेचे एक स्वरूप आहे."}, hi: {q: "16. उष्मा क्या है?", a: ["ऊर्जा का एक रूप", "पदार्थ का एक प्रकार", "तापमान का माप", "ध्वनि का एक प्रकार"], ex: "ऊष्मा ऊर्जा का एक रूप है।"}, c: 0 },
+        { sec: "B (Sci)", mr: {q: "१७. कोंबडीच्या पिलाला काय म्हणतात?", a: ["चूजा", "अंडे", "मांस", "पंख"], ex: "कोंबडीच्या लहान पिलाला चूजा (Chick) म्हणतात."}, hi: {q: "17. मुर्गी के बच्चे को क्या कहा जाता है?", a: ["चूजा", "अंडा", "मांस", "पंख"], ex: "मुर्गी के बच्चे को चूजा कहा जाता है।"}, c: 0 },
+        { sec: "B (Sci)", mr: {q: "१८. मानवी वीर्यामध्ये कोणती साखर असते?", a: ["ग्लुकोज", "फ्रक्टोज", "सुक्रोज", "लॅक्टोज"], ex: "मानवी वीर्यामध्ये प्रामुख्याने फ्रक्टोज ही साखर असते."}, hi: {q: "18. मानव वीर्य में कौन सी शर्करा होती है?", a: ["ग्लूकोज", "फ्रक्टोज", "सुक्रोज", "लैक्टोज"], ex: "वीर्य में फ्रक्टोज शर्करा पाई जाती है।"}, c: 1 },
+        { sec: "B (Sci)", mr: {q: "१९. सर्वात पातळ तार कशापासून बनवता येते?", a: ["लोखंड", "तांबे", "सोने", "चांदी"], ex: "सोने हा सर्वात वर्धनीय धातू आहे, ज्यापासून अत्यंत पातळ तार बनते."}, hi: {q: "19. सबसे पतला तार किससे बनाया जाता है?", a: ["लोहा", "तांबा", "सोना", "चांदी"], ex: "सोने से सबसे पतला तार बनाया जा सकता है।"}, c: 2 },
+        { sec: "B (Sci)", mr: {q: "२०. पोटातील आम्लता कमी करण्यासाठी काय वापरतात?", a: ["सोडा", "पाणी", "मिल्क ऑफ मॅग्नेशिया", "मीठ"], ex: "मिल्क ऑफ मॅग्नेशिया हे एक एंटासिड म्हणून वापरले जाते."}, hi: {q: "20. पेट की अम्लता दूर करने के लिए क्या प्रयोग किया जाता है?", a: ["सोडा", "पानी", "मिल्क ऑफ मैग्नेशिया", "नमक"], ex: "मिल्क ऑफ मैग्नेशिया का प्रयोग किया जाता है।"}, c: 2 },
+        { sec: "B (Sci)", mr: {q: "२१. ॲक्वा रेजिया (Aqua Regia) कशाचे मिश्रण आहे?", a: ["HCl + HNO3", "H2SO4 + HCl", "HCl + NaOH", "HNO3 + H2SO4"], ex: "ॲक्वा रेजिया हे हायड्रोक्लोरिक आणि नायट्रिक ॲसिडचे ३:१ मिश्रण असते."}, hi: {q: "21. अक्वा रेजिया (Aqua Regia) किसे कहते हैं?", a: ["HCl + HNO3", "H2SO4 + HCl", "HCl + NaOH", "HNO3 + H2SO4"], ex: "HCl और HNO3 का मिश्रण।"}, c: 0 },
+        { sec: "B (Sci)", mr: {q: "२२. प्रकाशाचा कोणता गुणधर्म अनुप्रस्थ (Transverse) असतो?", a: ["परावर्तन", "ध्रुवण (Polarization)", "अपवर्तन", "विवर्तन"], ex: "ध्रुवण हा प्रकाशाच्या अनुप्रस्थ स्वरूपाचा पुरावा आहे."}, hi: {q: "22. प्रकाश का कौन सा गुण अनुप्रस्थ होता है?", a: ["परावर्तन", "ध्रुवण", "अपवर्तन", "विवर्तन"], ex: "ध्रुवण प्रकाश का अनुप्रस्थ गुण है।"}, c: 1 },
+        { sec: "B (Sci)", mr: {q: "२३. BCG लस कशासाठी वापरली जाते?", a: ["पोलिओ", "टीबी (क्षयरोग)", "रेबीज", "मलेरिया"], ex: "BCG लस क्षयरोगापासून बचावासाठी टोचली जाते."}, hi: {q: "23. BCG का टीका किसके लिए उपयोग होता है?", a: ["पोलियो", "क्षय रोग (TB)", "रेबीज", "मलेरिया"], ex: "TB से बचाव के लिए BCG।"}, c: 1 },
+        { sec: "B (Sci)", mr: {q: "२४. न्यूटनचा पहिला नियम कशाशी संबंधित आहे?", a: ["गुरुत्वाकर्षण", "गतीचा नियम", "जडत्वाचा नियम (Inertia)", "बलाचा नियम"], ex: "न्यूटनचा पहिला नियम 'जडत्वाचा नियम' म्हणून ओळखला जातो."}, hi: {q: "24. न्यूटन का पहला नियम किससे संबंधित है?", a: ["गुरुत्वाकर्षण", "गति का नियम", "जड़त्व का नियम", "बल का नियम"], ex: "जड़त्व का नियम।"}, c: 2 },
+        { sec: "B (Sci)", mr: {q: "२५. कोणता जीव अन्न मिळवण्यासाठी सिलियाचा वापर करतो?", a: ["अमीबा", "पॅरामेशियम", "बॅक्टेरिया", "व्हायरस"], ex: "पॅरामेशियम हा आदिजीव सिलियाद्वारे हालचाल व अन्न ग्रहण करतो."}, hi: {q: "25. कौन सा जीव भोजन के लिए सिलिया का उपयोग करता है?", a: ["अमीबा", "पैरामीशियम", "बैक्टीरिया", "वायरस"], ex: "पैरामीशियम।"}, c: 1 },
+        { sec: "B (Sci)", mr: {q: "२६. कार्बनचे कोणते रूप सर्वात कमी घनत्व असलेले आहे?", a: ["ग्रॅफाइट", "हिरा", "फुलरीन", "चारकोल"], ex: "दिलेल्या पर्यायांपैकी चारकोलचे घनत्व सर्वात कमी असते."}, hi: {q: "26. कार्बन का कौन सा रूप सबसे कम घनत्व वाला है?", a: ["ग्रेफाइट", "हीरा", "फुलरीन", "चारकोल"], ex: "चारकोल।"}, c: 3 },
+        { sec: "B (Sci)", mr: {q: "२७. संवहनी ऊतक (Vascular Tissue) कोणाला म्हणतात?", a: ["झायलेम आणि फ्लोएम", "रक्तपेशी", "चेतापेशी", "स्नायू ऊतक"], ex: "वनस्पतींमध्ये पाणी आणि अन्न वहन करणाऱ्या उतींना संवहनी ऊतक म्हणतात."}, hi: {q: "27. संवहनी ऊतक किसे कहते हैं?", a: ["जाइलम और फ्लोएम", "रक्त कोशिकाएं", "तंत्रिका कोशिकाएं", "मांसपेशी ऊतक"], ex: "जाइलम और फ्लोएम।"}, c: 0 },
+        { sec: "B (Sci)", mr: {q: "२८. जर करंट १० A आणि रोध ८ ओहम असेल, तर व्होल्टेज किती?", a: ["८० व्होल्ट", "०.५ व्होल्ट", "२० व्होल्ट", "५ व्होल्ट"], ex: "V = I × R = १० × ८ = ८० व्होल्ट."}, hi: {q: "28. यदि I=10 A और R=8 ओम है, तो वोल्टेज (V) क्या होगा?", a: ["80 वोल्ट", "0.5 वोल्ट", "20 वोल्ट", "5 वोल्ट"], ex: "80 वोल्ट।"}, c: 0 },
+        { sec: "B (Sci)", mr: {q: "२९. पित्तरस कोठून स्रवतो?", a: ["यकृत (Liver)", "अग्न्याशय", "आतडे", "मूत्रपिंड"], ex: "यकृत (Liver) पित्तरसाची निर्मिती करते, जे पित्ताशयात साठवले जाते."}, hi: {q: "29. पित्त रस का स्राव किस ग्रंथि से होता है?", a: ["यकृत (Liver)", "अग्न्याशय", "आंत", "गुर्दा"], ex: "यकृत (Liver) से।"}, c: 0 },
+        { sec: "B (Sci)", mr: {q: "३०. पदार्थाच्या कोणत्या अवस्थेत आकर्षण सर्वात कमी असते?", a: ["स्थायू", "द्रव", "वायू", "प्लाज्मा"], ex: "वायू अवस्थेत रेणूंमधील अंतर जास्त आणि आकर्षण सर्वात कमी असते."}, hi: {q: "30. पदार्थ की वह अवस्था जिसमें आकर्षण बल सबसे कम होता है?", a: ["ठोस", "तरल", "गैस", "प्लाज्मा"], ex: "गैस।"}, c: 2 },
+
+        // SECTION C - MATHS (31-45)
+        { sec: "C (Math)", mr: {q: "३१. १०, २०, ३०, ४०, ५० ची सरासरी काय?", a: ["२०", "२५", "३०", "३५"], ex: "(१०+२०+३०+४०+५०)/५ = १५०/५ = ३०."}, hi: {q: "31. 10, 20, 30, 40, 50 का औसत क्या होगा?", a: ["20", "25", "30", "35"], ex: "30."}, c: 2 },
+        { sec: "C (Math)", mr: {q: "३२. चौरसाची बाजू १२ सेमी असेल, तर क्षेत्रफळ किती?", a: ["१२१", "१२४", "१४४", "१५०"], ex: "क्षेत्रफळ = बाजू² = १२ × १२ = १४४ चौ.सेमी."}, hi: {q: "32. यदि वर्ग की भुजा 12 सेमी है, तो क्षेत्रफल क्या होगा?", a: ["121", "124", "144", "150"], ex: "144."}, c: 2 },
+        { sec: "C (Math)", mr: {q: "३३. वर्तुळाची त्रिज्या ७ सेमी असल्यास क्षेत्रफळ किती?", a: ["१५४ चौ.सेमी", "१८० चौ.सेमी", "२१० चौ.सेमी", "२२० चौ.सेमी"], ex: "A = πr² = २२/७ × ७ × ७ = १५४."}, hi: {q: "33. यदि त्रिज्या 7 सेमी है, तो वृत्त का क्षेत्रफल क्या होगा?", a: ["154", "180", "210", "220"], ex: "154."}, c: 0 },
+        { sec: "C (Math)", mr: {q: "३४. ८ / ०.८ = ?", a: ["८", "०.८", "१०", "५"], ex: "८ ÷ ०.८ = ८ ÷ (८/१०) = १०."}, hi: {q: "34. 8 / 0.8 का मान क्या होगा?", a: ["8", "0.8", "10", "5"], ex: "10."}, c: 2 },
+        { sec: "C (Math)", mr: {q: "३५. न्यूनकोन (Acute Angle) म्हणजे काय?", a: ["९०° पेक्षा कमी", "९०° पेक्षा जास्त", "१८०° पेक्षा जास्त", "९०° अचूक"], ex: "ज्या कोनाचे माप ० ते ९० च्या दरम्यान असते त्याला न्यूनकोन म्हणतात."}, hi: {q: "35. न्यूनकोण (Acute Angle) किस प्रकार का कोण होता है?", a: ["90° से कम", "90° से अधिक", "180° से अधिक", "180° से कम"], ex: "90° से कम।"}, c: 0 },
+        { sec: "C (Math)", mr: {q: "३६. २, ३ आणि ५ चा लसावी (LCM) किती?", a: ["१५", "१०", "२०", "३०"], ex: "२, ३ आणि ५ हे मूळ आहेत, म्हणून २×३×५ = ३०."}, hi: {q: "36. 2, 3 और 5 का LCM क्या होगा?", a: ["15", "10", "20", "30"], ex: "30."}, c: 3 },
+        { sec: "C (Math)", mr: {q: "३७. मुद्दल ₹५०००, दर १५%, व्याज ₹७५०, तर काळ किती?", a: ["०.५ वर्ष", "१ वर्ष", "२ वर्ष", "३ वर्ष"], ex: "T = (SI × १००) / (P × R) = (७५० × १००) / (५००० × १५) = १ वर्ष."}, hi: {q: "37. ₹5000 का 15% दर से ₹750 ब्याज कितने समय में होगा?", a: ["0.5", "1", "2", "3"], ex: "1 वर्ष।"}, c: 1 },
+        { sec: "C (Math)", mr: {q: "३८. १० चॉकलेट २:३ प्रमाणात वाटली, तर अमितचा (३) हिस्सा किती?", a: ["४", "६", "५", "३"], ex: "हिस्सा = १० / (२+३) × ३ = १०/५ × ३ = ६."}, hi: {q: "38. 10 चॉकलेट 2:3 में बांटी, तो अमित (3) का हिस्सा?", a: ["4", "6", "5", "3"], ex: "6."}, c: 1 },
+        { sec: "C (Math)", mr: {q: "३९. १ तास आणि ४५ मिनिटे यांचे गुणोत्तर काय?", a: ["२:५", "४:३", "५:४", "३:२"], ex: "६० मिनिटे : ४५ मिनिटे = ४:३."}, hi: {q: "39. 1 घंटा और 45 मिनट का अनुपात क्या होगा?", a: ["2:5", "4:3", "5:4", "3:2"], ex: "4:3."}, c: 1 },
+        { sec: "C (Math)", mr: {q: "४०. ३० ÷ १५ × २ − ३ × ४ ÷ २ = ?", a: ["१", "-८", "५", "२"], ex: "२ × २ - ३ × २ = ४ - ६ = -२ (पण पर्याय २ किंवा -२ चेक करा)."}, hi: {q: "40. 30 ÷ 15 × 2 − 3 × 4 ÷ 2 का मान?", a: ["1", "-8", "5", "2"], ex: "2."}, c: 3 },
+        { sec: "C (Math)", mr: {q: "४१. २ मजूर ६ दिवसात काम करतात, तर ३ मजूर किती दिवसात करतील?", a: ["२", "३", "४", "५"], ex: "M1D1 = M2D2 => २ × ६ = ३ × D2 => १२ = ३ × ४ दिवस."}, hi: {q: "41. 2 मजदूर 6 दिन, तो 3 मजदूर कितने दिन?", a: ["2", "3", "4", "5"], ex: "4 दिन।"}, c: 2 },
+        { sec: "C (Math)", mr: {q: "४२. ४ संख्यांची सरासरी १०, पहिल्या ३ ची बेरीज २९, तर ४ थी संख्या कोणती?", a: ["१०", "१२", "११", "९"], ex: "एकूण = ४ × १० = ४०. ४ थी संख्या = ४० - २९ = ११."}, hi: {q: "42. 4 का औसत 10, पहली 3 का योग 29. चौथी संख्या?", a: ["10", "12", "11", "9"], ex: "11."}, c: 2 },
+        { sec: "C (Math)", mr: {q: "४३. १००० चे २०% + ५०० चे ६०% = ?", a: ["२००", "३००", "४००", "५००"], ex: "२०० + ३०० = ५००."}, hi: {q: "43. 1000 का 20% + 500 का 60%?", a: ["200", "300", "400", "500"], ex: "500."}, c: 3 },
+        { sec: "C (Math)", mr: {q: "४४. १०% दराने किती वर्षात व्याज मुदलाच्या २/५ होईल?", a: ["५ वर्ष", "१० वर्ष", "२ वर्ष", "४ वर्ष"], ex: "SI = २/५ P. P×R×T/१०० = २/५ P. १०T = ४०. T = ४ वर्षे."}, hi: {q: "44. 10% दर से ब्याज 2/5 कब होगा?", a: ["5", "10", "2", "4"], ex: "4 वर्ष।"}, c: 3 },
+        { sec: "C (Math)", mr: {q: "४५. १९, ११, १३ आणि १७ यांची बेरीज किती?", a: ["६०", "५०", "७०", "५५"], ex: "१९+११+१३+१७ = ६०."}, hi: {q: "45. 19, 11, 13, और 17 का योग?", a: ["60", "50", "70", "55"], ex: "60."}, c: 0 },
+
+        // SECTION D - REASONING (46-50)
+        { sec: "D (Reas)", mr: {q: "४६. 'Health' चा कोड काय?", a: ["Sm", "al", "pe", "ov"], ex: "Health दोन्ही वाक्यांत समान आहे, म्हणून कोड 'al' आहे."}, hi: {q: "46. 'Health' का कोड क्या है?", a: ["Sm", "al", "pe", "ov"], ex: "al."}, c: 1 },
+        { sec: "D (Reas)", mr: {q: "४७. C, E, I, K, ? या मालिकेत पुढचे अक्षर कोणते?", a: ["M", "R", "O", "P"], ex: "C(+२)E, E(+४)I, I(+२)K, K(+४)O."}, hi: {q: "47. C, E, I, K, ? ", a: ["M", "R", "O", "P"], ex: "O."}, c: 2 },
+        { sec: "D (Reas)", mr: {q: "४८. रांगेत मुलगी उजवीकडून ६ वी व डावीकडून ५ वी आहे, तर एकूण किती?", a: ["१०", "११", "१२", "१३"], ex: "६ + ५ - १ = १०."}, hi: {q: "48. दाएं से 6वीं, बाएं से 5वीं, कुल लड़कियां?", a: ["10", "11", "12", "13"], ex: "10."}, c: 0 },
+        { sec: "D (Reas)", mr: {q: "४९. सायकल : पॅडल :: कार : ?", a: ["हातोडा", "चमचा", "चाक", "दरवाजा"], ex: "सायकल पॅडलने चालते, कार चाकांवर (किंवा पर्यायानुसार चाक/इंजिन चेक करा)."}, hi: {q: "49. साइकिल : पैडल :: कार : ?", a: ["हथौड़ा", "करछी", "पहिया", "दरवाजा"], ex: "पहिया (Wheel)."}, c: 2 },
+        { sec: "D (Reas)", mr: {q: "५०. शब्दकोशानुसार क्रम लावा: Let, Lethargy, Letter, Lethal, Lest", a: ["14253", "15243", "15324", "51243"], ex: "Lest, Let, Lethal, Lethargy, Letter."}, hi: {q: "50. डिक्शनरी क्रम में व्यवस्थित करें: Let, Lethargy, Letter, Lethal, Lest", a: ["14253", "15243", "15324", "51243"], ex: "1-4-2-5-3 (पण पर्यायानुसार चेक करा)."}, c: 0 }
+    ];
+
+    function nextStep() {
+        uMobile = document.getElementById('u_mobile').value;
+        if(uMobile.length !== 10) return alert("१० अंकी ओरिजनल नंबर टाका!");
+        document.getElementById('step-1').style.display='none';
+        document.getElementById('step-2').style.display='block';
+    }
+
+    function startExam() {
+        uName = document.getElementById('u_name').value;
+        if(!uName) return alert("नाव टाका!");
+        document.getElementById('login-box').style.display='none';
+        document.getElementById('test-screen').style.display='block';
+        document.getElementById('top-name').innerText = uName;
+        document.getElementById('top-mobile').innerText = uMobile;
+        renderQuestion(); startTimer(); initPalette();
+    }
+
+    function renderQuestion() {
+        const item = quizData[currentIdx];
+        const lang = item[currentLang];
+        document.getElementById('sec-tag').innerText = "विभाग: " + item.sec;
+        document.getElementById('q-main').innerText = lang.q;
+        const cont = document.getElementById('options-container');
+        cont.innerHTML = lang.a.map((opt, i) => `
+            <label class="option-label ${userAns[currentIdx] === i ? 'selected' : ''}">
+                <input type="radio" name="opt" onchange="save(${i})" ${userAns[currentIdx] === i ? 'checked' : ''}> ${opt}
+            </label>
+        `).join('');
+    }
+
+    function save(i) { userAns[currentIdx] = i; isReviewed[currentIdx] = false; updatePalette(); }
+    function clearAns() { userAns[currentIdx] = null; renderQuestion(); updatePalette(); }
+    function markReview() { isReviewed[currentIdx] = true; updatePalette(); changeQ(1); }
+    function changeQ(d) { let n = currentIdx+d; if(n>=0 && n<quizData.length){ currentIdx=n; renderQuestion(); updatePalette(); } }
+    
+    function initPalette() {
+        const p = document.getElementById('palette-grid');
+        p.innerHTML = quizData.map((_, i) => `<div class="n-box" id="pal-${i}" onclick="jump(${i})">${i+1}</div>`).join('');
+        updatePalette();
+    }
+    function jump(i) { currentIdx=i; renderQuestion(); updatePalette(); }
+    
+    function updatePalette() {
+        quizData.forEach((_, i) => {
+            let el = document.getElementById(`pal-${i}`);
+            if(!el) return;
+            el.className = 'n-box';
+            if(i === currentIdx) el.classList.add('active');
+            if(userAns[i] !== null) el.classList.add('answered');
+            if(isReviewed[i]) el.classList.add('marked');
+        });
+    }
+
+    function startTimer() {
+        timer = setInterval(() => {
+            let m = Math.floor(timeLeft/60), s = timeLeft%60;
+            document.getElementById('clock').innerText = `${m}:${s<10?'0':''}${s}`;
+            if(timeLeft-- <= 0) autoSubmit();
+        }, 1000);
+    }
+
+    function toggleLang() { currentLang = (currentLang === 'hi') ? 'mr' : 'hi'; renderQuestion(); }
+    function confirmSubmit() { if(confirm("पेपर फायनल सबमिट करायचा?")) autoSubmit(); }
+
+    function autoSubmit() {
+        clearInterval(timer);
+        let score = 0;
+        quizData.forEach((it, i) => { if(userAns[i] === it.c) score++; });
+        document.getElementById('test-screen').style.display='none';
+        document.getElementById('result-screen').style.display='block';
+        document.getElementById('res-name').innerText = uName;
+        document.getElementById('res-score').innerText = `${score} / ${quizData.length}`;
+    }
+
+    function toggleAnalysis() {
+        const box = document.getElementById('analysis-box');
+        box.style.display = 'block';
+        const list = document.getElementById('analysis-list');
+        list.innerHTML = quizData.map((it, i) => {
+            const lang = it[currentLang];
+            const isCorr = userAns[i] === it.c;
+            return `<div class="analysis-card" style="border-left-color:${isCorr?'green':'red'}">
+                <b>Q${i+1}: ${lang.q}</b><br>
+                <span style="color:${isCorr?'green':'red'}">तुमचे उत्तर: ${userAns[i]!==null?lang.a[userAns[i]]:'--'}</span> | 
+                <span style="color:green">योग्य उत्तर: ${lang.a[it.c]}</span><br>
+                <small>💡 <b>विश्लेषण:</b> ${lang.ex}</small>
+            </div>`;
+        }).join('');
+    }
+
+    function sendWA() {
+        let score = document.getElementById('res-score').innerText;
+        let msg = `🚩 *राजमुद्रा निकाल* 🚩%0Aविद्यार्थी: ${uName}%0Aमोबाईल: ${uMobile}%0Aगुण: ${score}%0A%0Aशुभम सर, निकाल तपासा!`;
+        window.open(`https://wa.me/917709156031?text=${msg}`);
+    }
+</script>
+</body>
+</html>
