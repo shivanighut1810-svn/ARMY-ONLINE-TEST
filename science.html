@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>राजमुद्रा अकॅडमी - ऑनलाइन टेस्ट पोर्टल</title>
+    <style>
+        :root { --primary: #2c3e50; --secondary: #e74c3c; --success: #27ae60; --light: #f8f9fa; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #eaeff2; margin: 0; padding: 0; }
+        
+        /* Login Form */
+        #login-screen { display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .login-box { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 380px; text-align: center; }
+        .login-box h2 { color: var(--primary); margin-bottom: 5px; }
+        .login-box p { color: #666; margin-bottom: 25px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        #start-btn { background: var(--success); color: white; border: none; padding: 14px; cursor: pointer; border-radius: 6px; width: 100%; font-size: 18px; font-weight: bold; transition: 0.3s; }
+        #start-btn:hover { background: #219150; }
+
+        /* Exam Layout */
+        #exam-interface { display: none; grid-template-columns: 1fr 320px; gap: 20px; padding: 25px; max-width: 1300px; margin: auto; }
+        .main-card { background: white; padding: 35px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); min-height: 450px; position: relative; }
+        .sidebar-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); height: fit-content; }
+        
+        .timer-display { background: var(--secondary); color: white; padding: 12px; text-align: center; font-size: 24px; border-radius: 8px; font-weight: bold; margin-bottom: 20px; }
+        .q-header { font-size: 20px; font-weight: bold; color: var(--primary); margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .q-text { font-size: 18px; line-height: 1.6; margin-bottom: 25px; }
+        
+        .option-label { display: block; padding: 15px; margin: 12px 0; background: #fdfdfd; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .option-label:hover { background: #f0f7ff; border-color: #3498db; }
+        .option-label input { margin-right: 12px; transform: scale(1.2); }
+
+        .controls { display: flex; justify-content: space-between; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; }
+        .btn { padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 15px; }
+        .btn-prev { background: #bdc3c7; color: #333; }
+        .btn-clear { background: #f39c12; color: white; }
+        .btn-next { background: var(--primary); color: white; }
+        .btn-finish { background: var(--success); color: white; }
+
+        /* Palette */
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 15px; }
+        .p-item { width: 45px; height: 45px; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 5px; font-weight: bold; }
+        .p-item.active { border: 3px solid var(--secondary); background: #fff; }
+        .p-item.done { background: var(--success); color: white; border-color: var(--success); }
+
+        /* Results */
+        #result-screen { display: none; padding: 30px; max-width: 900px; margin: 30px auto; background: white; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .result-header { text-align: center; margin-bottom: 40px; }
+        .explain-box { background: #f0f8ff; border-left: 6px solid #3498db; padding: 20px; margin: 20px 0; border-radius: 5px; }
+        .ans-tag { font-weight: bold; padding: 4px 8px; border-radius: 4px; }
+        .correct { background: #d4edda; color: #155724; }
+        .wrong { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>राजमुद्रा अकॅडमी</h2>
+            <p>स्पर्धा परीक्षा केंद्र, येवला</p>
+            <input type="text" id="stu-name" placeholder="तुमचे नाव" required>
+            <input type="number" id="stu-mob" placeholder="मोबाईल नंबर" required>
+            <button id="start-btn" onclick="initTest()">पेपर सुरू करा</button>
+        </div>
+    </div>
+
+    <div id="exam-interface">
+        <div class="main-card">
+            <div class="q-header" id="q-idx">प्रश्न १ / ३०</div>
+            <div class="q-text" id="q-content">प्रश्न लोड होत आहे...</div>
+            <div id="opt-list"></div>
+            
+            <div class="controls">
+                <button class="btn btn-prev" onclick="move(-1)">मागे (Back)</button>
+                <button class="btn btn-clear" onclick="resetAns()">क्लिअर (Clear)</button>
+                <button class="btn btn-next" id="next-btn" onclick="move(1)">सेव्ह आणि नेक्स्ट (Save & Next)</button>
+                <button class="btn btn-finish" onclick="preSubmit()">सबमिट (Submit)</button>
+            </div>
+        </div>
+
+        <div class="sidebar-card">
+            <div class="timer-display" id="clock">10:00</div>
+            <div style="padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                <b>नाव:</b> <span id="user-display">---</span>
+            </div>
+            <p style="margin-top: 20px; font-weight: bold;">प्रश्न पॅलेट:</p>
+            <div class="palette-grid" id="q-palette"></div>
+        </div>
+    </div>
+
+    <div id="result-screen">
+        <div class="result-header">
+            <h1>निकाल आणि स्पष्टीकरण</h1>
+            <div id="final-score" style="font-size: 28px; color: var(--success); font-weight: bold;"></div>
+        </div>
+        <div id="review-area"></div>
+    </div>
+
+    <script>
+        const bank = [
+            {q: "आंतरराष्ट्रीय मापन पद्धतीत (SI) तापमानाचे एकक काय आहे?", a: ["सेल्सिअस", "फॅरनहाइट", "केल्विन", "जूल"], c: 2, e: "केल्विन हे तापमानाचे आंतरराष्ट्रीय स्तरावर मान्य असलेले SI एकक आहे."},
+            {q: "१ न्यूटन म्हणजे किती डाइन?", a: ["10³", "10⁵", "10⁷", "10⁸"], c: 1, e: "१ न्यूटन = १०⁵ डाइन हे बल मोजण्याचे SI आणि CGS संबंध आहेत."},
+            {q: "खालीलपैकी कोणती 'अदिश' राशी आहे?", a: ["वेग", "बल", "विस्थापन", "वस्तुमान"], c: 3, e: "वस्तुमानाला दिशा नसते, म्हणून ती अदिश राशी आहे."},
+            {q: "कोणत्या तापमानाला सेल्सिअस आणि फॅरनहाइट स्केल समान असतात?", a: ["0°", "100°", "-40°", "40°"], c: 2, e: "गणितीय सूत्रानुसार -४० या अंकाला दोन्ही स्केलवर समान मूल्य असते."},
+            {q: "न्यूटनचा गतीचा पहिला नियम कशाची व्याख्या देतो?", a: ["संवेग", "जडत्व", "कार्य", "ऊर्जा"], c: 1, e: "पहिला नियम वस्तूच्या जडत्वाचा गुणधर्म स्पष्ट करतो."},
+            {q: "पाण्याची सर्वाधिक घनता कोणत्या तापमानाला असते?", a: ["0°C", "4°C", "10°C", "100°C"], c: 1, e: "४°C ला पाण्याचे आकारमान सर्वात कमी आणि घनता सर्वाधिक असते."},
+            {q: "विस्थापन ही कोणत्या प्रकारची राशी आहे?", a: ["सदिश", "अदिश", "मूलभूत", "यांपैकी नाही"], c: 0, e: "विस्थापनाला दिशा असते, म्हणून ती सदिश आहे."},
+            {q: "शक्तीचे (Power) SI एकक काय आहे?", a: ["जूल", "वॅट", "न्यूटन", "पास्कल"], c: 1, e: "कार्य करण्याचा दर म्हणजे शक्ती, तिचे एकक वॅट आहे."},
+            {q: "धावती बस अचानक थांबल्यास प्रवासी पुढे झुकतात, हे कशाचे उदाहरण आहे?", a: ["विराम जडत्व", "गतीचे जडत्व", "दिशेचे जडत्व", "गुरुत्वाकर्षण"], c: 1, e: "शरीराचा वरचा भाग बससोबत गतीत असतो, म्हणून बस थांबली तरी तो पुढे जातो."},
+            {q: "प्रवेगाचे (Acceleration) SI एकक काय आहे?", a: ["m/s", "kg m/s", "m/s²", "N-m"], c: 2, e: "वेगातील बदलाचा दर मीटर प्रति सेकंद वर्ग (m/s²) मध्ये मोजतात."},
+            {q: "१ अश्वशक्ती म्हणजे किती वॅट?", a: ["500", "746", "1000", "646"], c: 1, e: "१ HP = ७४६ वॅट हे शक्तीचे औद्योगिक एकक आहे."},
+            {q: "संवेग (Momentum) म्हणजे काय?", a: ["बल × वेळ", "वस्तुमान × वेग", "वस्तुमान × त्वरण", "वेग × वेळ"], c: 1, e: "संवेग = वस्तुमान आणि वेग यांचा गुणाकार असतो."},
+            {q: "रॉकेटचे कार्य न्यूटनच्या कोणत्या नियमावर आधारित आहे?", a: ["पहिला", "दुसरा", "तिसरा", "केप्लर"], c: 2, e: "क्रिया आणि प्रतिक्रिया (Action-Reaction) या तिसऱ्या नियमावर रॉकेट चालते."},
+            {q: "गाडीने कापलेले एकूण अंतर मोजणाऱ्या यंत्राला काय म्हणतात?", a: ["स्पीडोमीटर", "ओडोमीटर", "पायरोमीटर", "बॅरोमीटर"], c: 1, e: "ओडोमीटर गाडीने कापलेले किलोमीटर मोजते."},
+            {q: "बल मोजण्याचे सूत्र काय आहे?", a: ["F=mv", "F=ma", "F=s/t", "F=mgh"], c: 1, e: "न्यूटनच्या दुसऱ्या नियमानुसार बल = वस्तुमान × त्वरण."},
+            {q: "मानवी शरीराचे सामान्य तापमान किती फॅरनहाइट असते?", a: ["97.4", "98.6", "99.2", "100"], c: 1, e: "निरोगी मानवी शरीराचे तापमान ९८.६°F किंवा ३७°C असते."},
+            {q: "अंतर मोजण्याचे सर्वात मोठे एकक कोणते?", a: ["प्रकाशवर्ष", "पारसेक", "खगोलीय एकक", "मैल"], c: 1, e: "पारसेक हे खगोलीय अंतर मोजण्याचे सर्वात मोठे एकक आहे."},
+            {q: "जेव्हा वस्तूचा वेग स्थिर असतो, तेव्हा प्रवेग किती असतो?", a: ["कमी", "जास्त", "शून्य", "दुप्पट"], c: 2, e: "वेगात बदल झाला नाही तर प्रवेग नेहमी शून्य असतो."},
+            {q: "जडत्वाचा नियम सर्वप्रथम कोणी मांडला?", a: ["न्यूटन", "अ‍ॅरिस्टॉटल", "गॅलिलिओ", "फॅराडे"], c: 2, e: "गॅलिलिओने प्रथम जडत्वाचा शोध लावला, नंतर न्यूटनने त्याला नियम दिला."},
+            {q: "दाबाचे (Pressure) SI एकक काय आहे?", a: ["जूल", "न्यूटन", "पास्कल", "वॅट"], c: 2, e: "पास्कल हे दाबाचे अधिकृत SI एकक आहे."},
+            {q: "वस्तूचे जडत्व कशावर अवलंबून असते?", a: ["वेगावर", "आकारावर", "वस्तुमानावर", "रंगावर"], c: 2, e: "वस्तुमान जितके जास्त, तितके जडत्व जास्त असते."},
+            {q: "परम शून्य तापमान किती असते?", a: ["0°C", "-273.15°C", "100K", "32°F"], c: 1, e: "केल्विन स्केलवर शून्य म्हणजेच उणे २७३.१५ सेल्सिअस."},
+            {q: "बंदूक चालवल्यावर खांद्याला झटका बसणे हे कशाचे उदाहरण आहे?", a: ["पहिला नियम", "दुसरा नियम", "तिसरा नियम", "जडत्व"], c: 2, e: "गोळी पुढे (क्रिया), बंदूक मागे (प्रतिक्रिया)."},
+            {q: "सूर्याचे तापमान मोजण्यासाठी काय वापरतात?", a: ["पायरोमीटर", "लॅक्टोमीटर", "बॅरोमीटर", "हायड्रोमीटर"], c: 0, e: "पायरोमीटर अतिउच्च तापमान मोजण्यासाठी वापरले जाते."},
+            {q: "मंदन (Retardation) म्हणजे काय?", a: ["धन त्वरण", "ऋण त्वरण", "शून्य वेग", "विस्थापन"], c: 1, e: "वेग कमी होण्याच्या क्रियेला ऋण त्वरण किंवा मंदन म्हणतात."},
+            {q: "चालीचे (Speed) SI एकक काय आहे?", a: ["km/h", "m/s", "m/s²", "cm/s"], c: 1, e: "चाल मीटर प्रति सेकंद (m/s) मध्ये मोजली जाते."},
+            {q: "फळे झाडावरून खाली पडणे हे कोणत्या बलामुळे घडते?", a: ["चुंबकीय", "घर्षण", "गुरुत्वीय", "स्थितिक"], c: 2, e: "पृथ्वीच्या गुरुत्वाकर्षण बलामुळे सर्व गोष्टी खाली पडतात."},
+            {q: "१ जूल म्हणजे किती अर्ग?", a: ["10⁵", "10⁷", "10¹⁰", "10³"], c: 1, e: "१ जूल = १०⁷ अर्ग हे ऊर्जा मोजण्याचे संबंध आहेत."},
+            {q: "झेल घेताना खेळाडू हात मागे का घेतो?", a: ["वेग वाढवण्यासाठी", "संवेग कमी करण्यासाठी", "बॉल पाहण्यासाठी", "यांपैकी नाही"], c: 1, e: "हात मागे घेतल्याने वेळ वाढतो आणि हातावरचा आघात (संवेग बदल) कमी होतो."},
+            {q: "पृथ्वीचा मुक्ती वेग (Escape Velocity) किती आहे?", a: ["9.8 km/s", "11.2 km/s", "10.2 km/s", "12 km/s"], c: 1, e: "पृथ्वीच्या गुरुत्वाकर्षणातून बाहेर पडण्यासाठी ताशी ११.२ किमी/सेकंद वेग लागतो."}
+        ];
+
+        let curr = 0;
+        let logs = new Array(bank.length).fill(null);
+        let clockSec = 600;
+
+        function initTest() {
+            const n = document.getElementById('stu-name').value;
+            if(!n) { alert("नाव टाका!"); return; }
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('exam-interface').style.display = 'grid';
+            document.getElementById('user-display').innerText = n;
+            loadQ();
+            drawPalette();
+            timerGo();
+        }
+
+        function loadQ() {
+            const data = bank[curr];
+            document.getElementById('q-idx').innerText = `प्रश्न ${curr + 1} / ${bank.length}`;
+            document.getElementById('q-content').innerText = data.q;
+            const box = document.getElementById('opt-list');
+            box.innerHTML = '';
+            data.a.forEach((o, i) => {
+                box.innerHTML += `
+                    <label class="option-label">
+                        <input type="radio" name="opt" value="${i}" ${logs[curr] == i ? 'checked' : ''} onchange="pick(${i})">
+                        ${o}
+                    </label>
+                `;
+            });
+            drawPalette();
+        }
+
+        function pick(idx) { logs[curr] = idx; drawPalette(); }
+
+        function move(step) {
+            curr += step;
+            if(curr < 0) curr = 0;
+            if(curr >= bank.length) curr = bank.length - 1;
+            loadQ();
+        }
+
+        function resetAns() { logs[curr] = null; loadQ(); }
+
+        function drawPalette() {
+            const p = document.getElementById('q-palette');
+            p.innerHTML = '';
+            bank.forEach((_, i) => {
+                let cls = 'p-item';
+                if(i === curr) cls += ' active';
+                if(logs[i] !== null) cls += ' done';
+                p.innerHTML += `<div class="${cls}" onclick="jump(${i})">${i+1}</div>`;
+            });
+        }
+
+        function jump(i) { curr = i; loadQ(); }
+
+        function timerGo() {
+            const t = setInterval(() => {
+                clockSec--;
+                let m = Math.floor(clockSec / 60);
+                let s = clockSec % 60;
+                document.getElementById('clock').innerText = `${m}:${s < 10 ? '0'+s : s}`;
+                if(clockSec <= 0) { clearInterval(t); finish(); }
+            }, 1000);
+        }
+
+        function preSubmit() { if(confirm("पेपर सबमिट करायचा का?")) finish(); }
+
+        function finish() {
+            document.getElementById('exam-interface').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+            let pts = 0;
+            let html = '';
+
+            bank.forEach((q, i) => {
+                const ok = logs[i] == q.c;
+                if(ok) pts++;
+                html += `
+                    <div style="border-bottom: 1px solid #ccc; padding: 20px;">
+                        <p><b>Q${i+1}. ${q.q}</b></p>
+                        <p>तुमचे उत्तर: <span class="ans-tag ${ok ? 'correct' : 'wrong'}">${logs[i] !== null ? q.a[logs[i]] : 'नाही दिले'}</span></p>
+                        <p>योग्य उत्तर: <span class="ans-tag correct">${q.a[q.c]}</span></p>
+                        <div class="explain-box"><b>स्पष्टीकरण:</b> ${q.e}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('final-score').innerText = `तुमचा स्कोर: ${pts} / ${bank.length}`;
+            document.getElementById('review-area').innerHTML = html;
+        }
+    </script>
+</body>
+</html>
